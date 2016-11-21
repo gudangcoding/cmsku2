@@ -23,7 +23,7 @@
 				<?php
 					if(isset($_POST['login'])){
 						$username = antiinjeksi($_POST['username']);
-						$password = antiinjeksi($_POST['password']);
+						$password = antiinjeksi(md5($_POST['password']));
 
 						$cekuser = $mysqli->query("SELECT * FROM user WHERE username='$username' AND password='$password'");
 						$jmluser = $cekuser->num_rows;
@@ -35,6 +35,10 @@
 							$_SESSION['password']    = $data['password'];
 							$_SESSION['iduser']      = $data['id_user'];
 							$_SESSION['leveluser']   = $data['level'];
+
+							$_SESSION['timeout'] 	 = time()+1000;
+							$_SESSION['login']		 = 1;
+							header('location: index.php');
 						} else{
 							echo '<div class="alert alert-danger login-alert" role="alert"><b>Sorry!</b> Username atau password salah.</div>';
 						}
