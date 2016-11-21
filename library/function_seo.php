@@ -8,4 +8,6 @@
 
 		//Ubah ke huruf kecil dan mengganti spasi dengan (-)
 		$kata = strtolower(str_replace(' ', '-', $kata));
+
+		return $kata;
 	}
