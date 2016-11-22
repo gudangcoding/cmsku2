@@ -24,7 +24,20 @@
 		break;
 
 		case "form":
-		//Menampilkan form input dan edit data
+			//Menampilkan form input dan edit data
+			if(isset($_GET['id'])){
+				$query = $mysqli->query("SELECT * FROM kategori WHERE id_kategori='$_GET[id]'");
+				$data = $query->fetch_array();
+				$aksi = "Edit";
+			} else{
+				$data = array("id_kategori"=>"", "kategori"=>"");
+				$aksi = "Tambah";
+			}
+			echo '<h3 class="page-header"><b>'.$aksi.' Kategori</b></h3>';
+
+			buka_form($link, $data['id_kategori'],strtolower($aksi));
+				buat_textbox("Nama Kategori", "kategori", $data['kategori']);
+			tutup_form($link);
 		break;
 
 		case "action":
