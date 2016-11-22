@@ -41,7 +41,19 @@
 		break;
 
 		case "action":
-		//Menyisipkan atau mengedit data di database
+			//Menyisipkan atau mengedit data di database
+			$kategori_seo = convert_seo($_POST['kategori']);
+			if($_POST['aksi'] == "tambah"){
+				$mysqli->query("INSERT INTO kategori SET
+					kategori = '$_POST[kategori]',
+					kategori_seo = '$kategori_seo'");
+			}elseif($_POST['aksi'] == "edit"){
+				$mysqli->query("UPDATE kategori SET
+					kategori = '$_POST[kategori]',
+					kategori_seo = '$kategori_seo'
+				WHERE id_kategori='$_POST[id]'");
+			}
+			header('location:'.$link);
 		break;
 
 		case "delete":
