@@ -17,11 +17,11 @@ $('document').ready(function(){
 	
 	
 	//Memberi pesan pada tombol hapus
-	// $('.btn-danger').click(function(){
-	// 	if(confirm("Apakah Anda yakin?")){
-	// 		return true;
-	// 	}else{
-	// 		return false;
-	// 	}
-	// });
+	$('.btn-danger').click(function(){
+		if(confirm("Apakah Anda yakin?")){
+			return true;
+		}else{
+			return false;
+		}
+	});
 });
