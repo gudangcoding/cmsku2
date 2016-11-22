@@ -38,6 +38,36 @@
 
 		case "form":
 			//Skrip menampilkan form tambah dan edit data
+			if(isset($_GET['id'])){
+				$query = $mysqli->query("SELECT * FROM halaman WHERE id_halaman='$_GET[id]'");
+				$data = $query->fetch_array();
+				$aksi = "Edit";
+			}else{
+				$data = array("id_halaman"=>"","judul"=>"","isi"=>"","gambar"=>"","id_modul"=>"");
+				$aksi = "Tambah";
+			}
+
+			echo '<h3 class="page-header"><b>'.$aksi.' Halaman</b></h3>';
+
+			if($aksi == "Tambah" and $_SESSION['leveluser'] != "admin"){
+				header('location:'.$link);
+			}else{
+				buka_form($link, $data['id_halaman'], strtolower($aksi));
+					buat_textbox("Judul Halaman", "judul", $data['judul'],10);
+					buat_textarea("Isi Halaman", "isi", $data['isi'], "richtext");
+					buat_imagepicker("Gambar","gambar", $data['gambar']);
+
+					//Menampilkan pilihan modul untuk ditampilkan pada halaman
+					$konten = $mysqli->query("SELECT * FROM modul WHERE konten='Y' AND aktif='Y'");
+					$list = array();
+					$list[] = array('val'=>'0', 'cap'=>'Tidak ada');
+
+					while($kt = $konten->fetch_array()){
+						$list[] = array('val'=>$kt['id_modul'],'cap'=>$kt['judul']);
+					}
+					buat_combobox("Konten Modul", "konten", $list, $data['id_modul']);
+				tutup_form($link);
+			}
 		break;
 
 		case "action":
