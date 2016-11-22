@@ -31,6 +31,7 @@
 					}else{
 						isi_tabel($no, array($data['judul'], $us['nama_lengkap']), $link, $data['id_halaman'], true, false);
 					}
+					$no++;
 				}
 			tutup_tabel();
 		break;
