@@ -72,6 +72,37 @@
 
 		case "action":
 			//Skrip aksi form tambah dan edit
+			$judul = addslashes($_POST['judul']);
+			$judul_seo = convert_seo($_POST['judul']);
+			$isi = addslashes($_POST['isi']);
+			$user = $_SESSION['iduser'];
+
+			if($_POST['aksi'] == "tambah"){
+			$mysqli->query("INSERT INTO halaman SET
+				judul 		= '$judul',
+				judul_seo 	= '$judul_seo',
+				isi			= '$isi',
+				hari		= '$hari_ini',
+				tanggal		= '$tanggal',
+				jam			= '$jam',
+				id_user		= '$user',
+				id_modul	= '$_POST[konten]',
+				gambar 		= '$_POST[gambar]'				
+			");
+			}elseif($_POST['aksi'] == "edit"){
+				$mysqli->query("UPDATE halaman SET
+					judul 		= '$judul',
+					judul_seo 	= '$judul_seo',
+					isi			= '$isi',
+					hari		= '$hari_ini',
+					tanggal		= '$tanggal',
+					jam			= '$jam',
+					id_user		= '$user',
+					id_modul	= '$_POST[konten]',
+					gambar 		= '$_POST[gambar]'
+				WHERE id_halaman='$_POST[id]'");
+			}
+			header('location:'.$link);
 		break;
 
 		case "delete":
