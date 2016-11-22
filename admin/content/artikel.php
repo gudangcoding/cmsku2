@@ -39,6 +39,44 @@
 
 		case "form":
 			//Skrip menampilkan form tambah dan edit data
+			if(isset($_GET['id'])){
+				$query = $mysqli->query("SELECT * FROM artikel WHERE id_artikel='$_GET[id]'");
+				$data = $query->fetch_array();
+				$aksi = "Edit";
+			}else{
+				$data = array("id_artikel"=>"","judul"=>"","isi"=>"","gambar"=>"","kategori"=>"","tag"=>"");
+				$aksi = "Tambah";
+			}
+
+			if($aksi == "Edit" and $_SESSION['leveluser'] != "admin" and $data['id_user'] != $_SESSION['iduser']){
+				header('location:'.$link);
+			}else{
+				echo '<h3 class="page-header"><b>'.$aksi.' Artikel</b></h3>';
+
+				buka_form($link, $data['id_artikel'], strtolower($aksi));
+					buat_textbox("Judul Artikel", "judul", $data['judul'],10);
+					buat_textarea("Isi Artikel","isi", $data['isi'],"richtext");
+					buat_imagepicker("Gambar","gambar",$data['gambar']);
+
+					//Menampilkan pilihna kategori dengan combobox
+					$kategori = $mysqli->query("SELECT * FROM kategori");
+					$list = array();
+					while($k = $kategori->fetch_array()){
+						$list[] = array('val'=>$k['id_kategori'],'cap'=>$k['kategori']);
+					}
+					buat_combobox("Kategori","kategori",$list, $data['kategori']);
+
+					//Menampilkan pilihan tag dengan checkbox
+					$tag = $mysqli->query("SELECT * FROM tag");
+					$arr_tag = explode(",",$data['tag']);
+					$list = array();
+					while($t = $tag->fetch_array()){
+						$check = (array_search($t['tag_seo'], $arr_tag) === false ? "" : "checked");
+						$list[] = array("val"=>$t['tag_seo'], "cap"=>$t['tag'], "check"=>$check);
+					}
+					buat_checkbox("Tag","tag",$list);
+				tutup_form($link);
+			}
 		break;
 
 		case "action";
