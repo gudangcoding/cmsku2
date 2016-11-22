@@ -1,67 +1,67 @@
 <?php
-	session_start();
-	ob_start();
+session_start();
+ob_start();
+define("INDEX",true);
 
-	//Membuat konstanta dengan nama INDEX
-	define("INDEX",true);
+//Panggil semua file yang diperlukan pada folder library
+include "../library/config.php";
+include "../library/function_seo.php";
+include "../library/function_menu.php";
+include "../library/function_table.php";
+include "../library/function_form.php";
+include "../library/function_date.php";
 
-	//Panggil semua file yang diperlukan pada folder library
-	include "../library/config.php";
-	include "../library/function_seo.php";
-	include "../library/function_menu.php";
-	include "../library/function_table.php";
-	include "../library/function_form.php";
-	include "../library/function_date.php";
+//Mengatur batas timeout
+$timeout = $_SESSION['timeout'];
+if(time()<$timeout){
+	$_SESSION['timeout'] = time()+5000;
+}else{
+	$_SESSION['login'] = 0;
+}
 
-	//Mengatur batas timeout
-	$timeout = $_SESSION['timeout'];
-	if(time() < $timeout){
-		$_SESSION['timeout'] = time() + 5000;
-	} else{
-		$_SESSION['login'] = 0;
-	}
-
-	//Mengatur status login
-	if(empty($_SESSION['username']) or empty($_SESSION['password']) or $_SESSION['login'] == 0){
-		header('location:login.php');
-	} else{
+//Mengecek status login
+if(empty($_SESSION['username']) or empty($_SESSION['password']) or $_SESSION['login']==0){
+	header('location: login.php');
+}else{
 ?>
-<!DOCTYPE html>
+
 <html>
 <head>
-	<title>Halaman Administator</title>
+	<title>Halaman Administrator</title>
+
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=devide-width,initial-scale=1,maximum-scale=1.0" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0" />
 
-	<link rel="stylesheet" type="text/css" href="../plugin/bootstrap/css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-
+	<link rel="stylesheet" type="text/css" href="../plugin/bootstrap/css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	
 	<script type="text/javascript" src="../plugin/jquery/jquery-2.0.2.min.js"></script>
 </head>
 <body>
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container-fluid">
-			<?php include "menu.php"; ?>
-		</div>
-	</nav>
 
-	<section class="container-fluid">
-		<div class="row">
-			<div class="col-md-2 col-sm-3 hidden-xs sidebar">
-				<?php include "sidebar.php"; ?>
-			</div>
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-				<?php include "content.php"; ?>
-			</div>
-		</div>
-	</section>
+<nav class="navbar navbar-inverse navbar-fixed-top"> 
+	<div class="container-fluid">
+		<?php include "menu.php"; ?> 
+	</div>
+</nav>	
 
-	<footer class="navbar navbar-fixed-bottom footer">
-		<div class="container-fluid">
-			<p class="text-center">Copyright &copy; Cmsku. All right reserved.</p>
+<section class="container-fluid"> 	
+	<div class="row">
+		<div class="col-md-2 col-sm-3 hidden-xs sidebar">
+			<?php include "sidebar.php"; ?> 
 		</div>
-	</footer>
-	
+		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+			<?php include "content.php"; ?> 
+		</div>
+	</div>
+</section>
+
+<footer class="navbar navbar-fixed-bottom footer"> 
+	<div class="container-fluid">
+		<p class="text-center">Copyright &copy; Cmsku. All right reserved.</p>
+	</div>
+</footer>
+
 	<script type="text/javascript" src="../plugin/bootstrap/js/bootstrap.min.js"></script>
 	 	
 	<link type="text/css" rel="stylesheet" href="../plugin/dataTables/css/dataTables.bootstrap.css">
@@ -72,4 +72,5 @@
 	<script type="text/javascript" src="js/myscript.js"></script>
 </body>
 </html>
+
 <?php } ?>

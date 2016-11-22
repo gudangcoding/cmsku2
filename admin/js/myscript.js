@@ -9,11 +9,11 @@ $('document').ready(function(){
 	});	
 	
 	//Menerapkan plugin dataTable
-	// $(".table-data").dataTable({
-	// 	"iDisplayLength": 20, 
-	// 	"aLengthMenu": [5,10,20,50,100], 
-	// 	"sPaginationType": "full_numbers"
-	// });
+	$(".table-data").dataTable({
+		"iDisplayLength": 20, 
+		"aLengthMenu": [5,10,20,50,100], 
+		"sPaginationType": "full_numbers"
+	});
 	
 	
 	//Memberi pesan pada tombol hapus
