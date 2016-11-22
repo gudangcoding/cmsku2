@@ -107,5 +107,9 @@
 
 		case "delete":
 			//Skrip menghapus data
+			if($_SESSION['leveluser']=="admin"){
+				$mysqli->query("DELETE FROM halaman WHERE id_halaman='$_GET[id]'");
+			}
+			header('location:'.$link);
 		break;
 	}
