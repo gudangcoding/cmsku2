@@ -61,6 +61,17 @@
 
 		case "action":
 			//Skrip aksi form edit
+			$nama			= addslashes($_POST['nama']);
+			$komentar		= addslashes($_POST['komentar']);
+	
+			$mysqli->query("UPDATE komentar SET
+				nama 		= '$nama',
+				email		= '$_POST[email]',
+				komentar	= '$komentar',
+				tanggal		= '$tanggal'
+			WHERE id_komentar='$_POST[id]'");
+
+			header('location:'.$link);
 		break;
 
 		case "delete":
