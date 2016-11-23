@@ -76,5 +76,7 @@
 
 		case "delete":
 			//Skrip menghapus data
+			$mysqli->query("DELETE FROM komentar WHERE id_komentar='$_GET[id]'");
+			header('location:'.$link);
 		break;
 	}
