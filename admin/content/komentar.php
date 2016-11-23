@@ -45,6 +45,18 @@
 
 		case "form":
 			//Skrip menampilkan form edit data
+			$mysqli->query("UPDATE komentar SET dibaca='Y' WHERE id_komentar='$_GET[id]'");
+			$query = $mysqli->query("SELECT * FROM komentar WHERE id_komentar='$_GET[id]'");
+			$data = $query->fetch_array();
+			$aksi = "Edit";
+
+			echo '<h3 class="page-header"><b>'.$aksi.' Komentar</b></h3>';
+
+			buka_form($link, $data['id_komentar'],strtolower($aksi));
+				buat_textbox("Nama","nama",$data['nama']);
+				buat_textbox("Email","email",$data['email']);
+				buat_textarea("Isi Komentar","komentar",$data['komentar'],"richtext");
+			tutup_form($link);
 		break;
 
 		case "action":
