@@ -92,6 +92,20 @@
 
 		case "delete":
 			//Skrip menghapus data di database
+			$query = $mysqli->query("SELECT * FROM modul WHERE id_modul='$_GET[id]'");
+			$data = $query->fetch_array();
+
+			if(file_exists("../module/$data[folder]/function.php")){
+				include "../module/$data[folder]/function.php";
+				hapus_modul();
+			}
+
+			include "../library/function_remove.php";
+			hapus_folder("../module/$data[folder]");
+
+			$mysqli->query("DELETE FROM modul WHERE id_modul='$_GET[id]'");
+
+			header('location:'.$link);
 		break;
 
 		case "activate":
