@@ -110,6 +110,25 @@
 
 		case "activate":
 			//Skrip mengaktifkan modul
+			$query 	= $mysqli->query("SELECT * FROM modul WHERE id_modul='$_GET[id]'");
+			$data	= $query->fetch_array();
+			
+			$menu = (file_exists("../module/$data[folder]/menu.php")) ? 'Y' : 'N';
+			$konten = (file_exists("../module/$data[folder]/content.php")) ? 'Y' : 'N';
+			$widget = (file_exists("../module/$data[folder]/widget.php")) ? 'Y' : 'N';
+			
+			if(file_exists("../module/$data[folder]/function.php")){
+				include "../module/$data[folder]/function.php";
+				aktifkan_modul();
+			}
+			
+			$mysqli->query("UPDATE modul SET 
+				aktif	= 'Y',
+				menu	= '$menu',
+				konten	= '$konten',
+				widget  = '$widget'
+			WHERE id_modul='$_GET[id]'");
+			header('location:'.$link);
 		break;
 
 		case "deactivate":
