@@ -133,5 +133,7 @@
 
 		case "deactivate":
 			//Skrip menonaktifkan modul
+			$mysqli->query("UPDATE modul SET aktif='N' WHERE id_modul='$_GET[id]'");
+			header('location:'.$link);
 		break;
 	}
