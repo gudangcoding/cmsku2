@@ -45,7 +45,23 @@
 
 		case "form":
 			//Skrip menampilkan form input dan edit data
+			if(isset($_GET['id'])){
+				$query= $mysqli->query("SELECT * FROM user WHERE id_user = '$_GET[id]'");
+				$data = $query->fetch_array();
+				$aksi = "Edit";
+			}else{
+				$data = array("id_user"=>"","nama_lengkap"=>"","email"=>"","username"=>"");
+				$aksi = "Tambah";
+			}
 
+			echo '<h3 class="page-header"><b>'.$aksi.' User</b></h3>';
+
+			buka_form($link, $data['id_user'],strtolower($aksi));
+				buat_textbox("Nama Lengkap","nama_lengkap",$data['nama_lengkap']);
+				buat_textbox("Email","email",$data['email']);
+				buat_textbox("Username","username",$data['username']);
+				buat_textbox("Password","password","",4, "password");
+			tutup_form($link);
 		break;
 
 		case "action":
