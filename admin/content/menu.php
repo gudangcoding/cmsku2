@@ -70,6 +70,59 @@
 
 		case "form":
 			//Skrip menampilkan form input dan edit data
+			if(isset($_GET['id'])){
+				$query 	= $mysqli->query("SELECT * FROM menu WHERE id_menu='$_GET[id]'");
+				$data	= $query->fetch_array();
+				$aksi 	= "Edit";
+				$kategori_menu = $data['kategori_menu'];
+			}else{
+				$data = array("id_menu"=>"", "judul"=>"", "induk"=>"", "jenis_link"=>"", "link"=>"", "urut"=>"");
+				$aksi 	= "Tambah";
+				$kategori_menu = $_GET['kategori'];
+			}
+			
+			echo'<h3 class="page-header"><b>'.$aksi.' Menu</b> </h3>';	
+			
+			buka_form($link.'&kategori='.$kategori_menu, $data['id_menu'], strtolower($aksi));
+				buat_textbox("Judul Menu", "judul", $data['judul']);
+				
+				$menu = $mysqli->query("SELECT * FROM menu WHERE induk='0' and kategori_menu='$kategori_menu'");
+				$list = array();
+				$list[] = array('val'=>'', 'cap'=>'Tidak Ada');
+				while($mn = $menu->fetch_array()){
+					$list[] = array('val'=>$mn['id_menu'], 'cap'=>$mn['judul']);
+				}
+				buat_combobox("Induk Menu", "induk", $list, $data['induk']);	
+				
+				$list = array();
+				$list[] = array("val"=>"halaman", "cap"=>"Halaman");
+				$list[] = array("val"=>"kategori", "cap"=>"Kategori");
+				$list[] = array("val"=>"url", "cap"=>"URL");
+				buat_combobox("Jenis Link", "jenis_link", $list, $data['jenis_link']);
+				
+				$list = array();
+				$halaman = $mysqli->query("SELECT * FROM halaman");
+				while($hal = $halaman->fetch_array()){
+					$list[] = array("val"=>$hal['id_halaman'], "cap"=>$hal['judul']);
+				}
+				buat_combobox("Link Halaman", "link_halaman", $list, $data['link']);
+				
+				$list = array();
+				$kategori = $mysqli->query("SELECT * FROM kategori");
+				while($kat = $kategori->fetch_array()){
+					$list[] = array("val"=>$kat['id_kategori'], "cap"=>$kat['kategori']);
+				}
+				buat_combobox("Link Kategori", "link_kategori", $list, $data['link']);
+				
+				buat_textbox("Link URL", "link_url", $data['link']);
+				
+				$list = array();
+				for($i=1; $i<=20; $i++){
+					$list[] = array("val"=>$i, "cap"=>$i);
+				}
+				buat_combobox("Urutan", "urut", $list, $data['urut'], 1);
+				
+			tutup_form($link.'&kategori='.$kategori_menu);
 		break;
 
 		case "action":
