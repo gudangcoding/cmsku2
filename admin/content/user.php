@@ -89,5 +89,12 @@
 
 		case "delete";
 			//Skrip menghapus data di database
+			$query = $mysqli->query("SELECT * FROM user WHERE id_user = '$_GET[id]'");
+			$data = $query->fetch_array();
+
+			if($_SESSION['leveluser'] == "admin" AND $data['level'] != "admin"){
+				$mysqli->query("DELETE FROM user WHERE id_user = '$_GET[id]'");
+			}
+			header('location:'.$link);
 		break;
 	}
