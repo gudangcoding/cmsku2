@@ -65,6 +65,35 @@
 
 		case "action":
 			//Skrip menyisipkan atau mengedit data di database
+			if($_POST['aksi'] == "tambah"){
+				$filename = $_FILES["file"]["name"];
+				$source = $_FILES["file"]["tmp_name"];
+				$type = $_FILES["file"]["type"];
+
+				$nama = explode('.',$filename);
+				if($nama[1] != "zip"){
+					echo '<script>
+								window.alert("File yang diupload tidak bertipe .zip. Silahkan diulang.");
+								window.location.href=history.back();
+							</script>';
+				}else{
+					include "../library/function_unzip.php";
+					unzip_file($filename, $source, "../template");
+
+					$mysqli->query("INSERT INTO template SET
+						judul = '$_POST[judul]',
+						folder = '$nama[0]',
+						aktif = 'N'
+						");
+					header('location:'.$link);
+				}
+			}elseif($_POST['aksi'] == "edit"){
+				$mysqli->query("UPDATE template SET
+					judul = '$_POST[judul]',
+					WHERE id_template = '$_POST[id]'
+					");
+				header('location: '.$link);
+			}
 		break;
 
 		case "delete":
