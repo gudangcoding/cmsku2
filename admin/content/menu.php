@@ -160,5 +160,11 @@
 
 		case "delete":
 			//Skrip menghapus data di database
+			$query = $mysqli->query("SELECT * FROM menu WHERE id_menu='$_GET[id]'");
+			$data = $query->fetch_array();
+
+			$mysqli->query("DELETE FROM menu WHERE id_menu='$_GET[id]'");
+
+			header('location: '.$link.'&kategori='.$data['kategori_menu']);
 		break;
 	}
