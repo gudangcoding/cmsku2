@@ -1,5 +1,5 @@
 <?php
-	if(!defined("INDEX")) header('location: index.php');
+	if(!defined("INDEX")) header('location: ../index.php');
 
 	$show = isset($_GET['show']) ? $_GET['show'] : "";
 	$link = "?content=user";

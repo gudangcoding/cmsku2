@@ -1,5 +1,5 @@
 <?php
-	if(!defined("INDEX")) header('location: index.php');
+	if(!defined("INDEX")) header('location: ../index.php');
 
 	if($_SESSION['leveluser'] != "admin") header('location: index.php');
 

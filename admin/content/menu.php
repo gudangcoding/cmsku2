@@ -1,6 +1,6 @@
 <script type="text/javascript" src="js/menu.js"></script>
 <?php
-	if(!defined("INDEX")) header('location: index.php');
+	if(!defined("INDEX")) header('location: ../index.php');
 	if($_SESSION['leveluser'] != "admin") header('location: index.php');
 
 	$show = isset($_GET['show']) ? $_GET['show'] : "";

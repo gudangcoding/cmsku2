@@ -2,7 +2,7 @@
 <script type="text/javascript" src="js/tinymce_config.js"></script>
 
 <?php
-	if(!defined("INDEX")) header('location: index.php');
+	if(!defined("INDEX")) header('location: ../index.php');
 	
 	$show = isset($_GET['show']) ? $_GET['show'] : "";
 	$link = "?content=artikel";
