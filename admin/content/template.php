@@ -24,9 +24,9 @@
 										<i class="glyphicon glyphicon-ok-circle"></i>
 									</span>';
 					}else{
-						$aktif = '<span style="color:red">
+						$aktif = '<a href="'.$link.'&show=activate&id='.$data['id_template'].'" style="color:red">
 										<i class="glyphicon glyphicon-remove-circle"></i>
-									</span>';
+									</a>';
 					}
 
 					if(file_exists("../template/$data[folder]/preview.png")){
