@@ -109,4 +109,12 @@
 
 			header('location: '.$link);
 		break;
+
+		case "activate":
+			//Skrip mengaktifkan template
+			$mysqli->query("UPDATE template SET aktif='N'");
+			$mysqli->query("UPDATE template SET aktif='Y' WHERE id_template='$_GET[id]'");
+
+			header('location: '.$link);
+		break;
 	}
