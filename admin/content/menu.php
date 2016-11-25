@@ -127,6 +127,35 @@
 
 		case "action":
 			//Skrip menyisipkan atau mengedit data di database
+			if($_POST['jenis_link'] == "halaman"){
+				$datalink = $_POST['link_halaman'];
+			}elseif($_POST['jenis_link'] == "kategori"){
+				$datalink = $_POST['link_kategori'];
+			}else{
+				$datalink = $_POST['link_url'];
+			}
+
+			if($_POST['aksi'] == "tambah"){
+				$mysqli->query("INSERT INTO menu SET
+					judul = '$_POST[judul]',
+					induk = '$_POST[induk]',
+					kategori_menu = '$_GET[kategori]',
+					jenis_link = '$_POST[jenis_link]',
+					link = '$datalink',
+					urut = '$_POST[urut]'
+					");
+			}elseif($_POST['aksi'] == "edit"){
+				$mysqli->query("UPDATE menu SET
+					judul = '$_POST[judul]',
+					induk = '$_POST[induk]',
+					kategori_menu = '$_GET[kategori]',
+					jenis_link = '$_POST[jenis_link]',
+					link = '$datalink',
+					urut = '$_POST[urut]'
+					WHERE id_menu='$_POST[id]'
+					");
+			}
+			header('location: '.$link.'&kategori='.$_GET['kategori']);
 		break;
 
 		case "delete":
