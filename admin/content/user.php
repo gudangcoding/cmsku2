@@ -27,8 +27,8 @@
 				}
 			tutup_tabel();
 			}else{
-				$id_user = $_SESSION['id_user'];
-				$query = $mysqli->query("SELECT * FROM user WHERE id_user = '$_GET[id]'");
+				$id_user = $_SESSION['iduser'];
+				$query = $mysqli->query("SELECT * FROM user WHERE id_user = '$id_user'");
 				$data = $query->fetch_array();
 				$aksi = "Edit";
 
@@ -66,6 +66,25 @@
 
 		case "action":
 			//Skrip menyisipkan atau mengedit data di database
+			$password = md5($_POST['password']);
+			if($_POST['aksi'] == "tambah"){
+				$mysqli->query("INSERT INTO user SET
+					nama_lengkap 	= '$_POST[nama_lengkap]',				
+					email	 		= '$_POST[email]',				
+					username	 	= '$_POST[username]',				
+					password	 	= '$password',
+					level			= 'author'
+				");
+			}elseif($_POST['aksi'] == "edit"){
+				$mysqli->query("UPDATE user SET
+					nama_lengkap 	= '$_POST[nama_lengkap]',				
+					email	 		= '$_POST[email]',				
+					username	 	= '$_POST[username]'	
+				WHERE id_user='$_POST[id]'");
+				
+				if($_POST['password']!="") $mysqli->query("UPDATE user SET	password = '$password' WHERE id_user='$_POST[id]'");
+			}
+			header('location:'.$link);
 		break;
 
 		case "delete";
