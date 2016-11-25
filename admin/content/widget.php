@@ -25,7 +25,7 @@
 										<i class="glyphicon glyphicon-ok-circle"></i>
 									</a>';
 					}else{
-						$aktif = '<a href="'.$link.'&show=activate&id='.$data['id_widget'].'" style="color:green">
+						$aktif = '<a href="'.$link.'&show=activate&id='.$data['id_widget'].'" style="color:red">
 										<i class="glyphicon glyphicon-remove-circle"></i>
 									</a>';
 					}
@@ -117,13 +117,19 @@
 
 		case "delete":
 			//Skrip menghapus data di database
+			$mysqli->query("DELETE FROM widget WHERE id_widget='$_GET[id]'");
+			header('location: '.$link);
 		break;
 
 		case "activate":
 			//Skrip mengaktifkan data
+			$mysqli->query("UPDATE widget SET aktif='Y' WHERE id_widget='$_GET[id]'");
+			header('location: '.$link);
 		break;
 
 		case "deactivate":
 			//Skrip menonaktifkan data
+			$mysqli->query("UPDATE widget SET aktif='N' WHERE id_widget='$_GET[id]'");
+			header('location: '.$link);
 		break;
 	}
