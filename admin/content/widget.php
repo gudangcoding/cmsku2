@@ -80,12 +80,39 @@
 				for($i=1;$i<=20;$i++){
 					$list[] = array("val"=>$i,"cap"=>$i);
 				}
-				buat_combobox("Urutan","urutan",$list, $data['urut'],1);
+				buat_combobox("Urutan","urut",$list, $data['urut'],1);
 			tutup_form($link);
 		break;
 
 		case "action":
 			//Skrip menyisipkan atau mengedit data di database
+			if($_POST['tipe'] == "modul"){
+				$konten = $_POST['modul'];
+			}else if($_POST['tipe'] == "skrip"){
+				$konten = addslashes($_POST['skrip']);
+			}else{
+				$konten = "";
+			}
+
+			if($_POST['aksi'] == "tambah"){
+				$mysqli->query("INSERT INTO widget SET
+					judul = '$_POST[judul]',
+					tipe = '$_POST[tipe]',
+					konten = '$konten',
+					posisi = '$_POST[posisi]',
+					urut = '$_POST[urut]'
+					");
+			}elseif($_POST['aksi'] == "edit"){
+				$mysqli->query("UPDATE widget SET
+					judul = '$_POST[judul]',
+					tipe = '$_POST[tipe]',
+					konten = '$konten',
+					posisi = '$_POST[posisi]',
+					urut = '$_POST[urut]'
+					WHERE id_widget = '$_POST[id]'
+					");
+			}
+			header('location: '.$link);
 		break;
 
 		case "delete":
