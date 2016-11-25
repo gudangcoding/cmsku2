@@ -40,6 +40,7 @@
 					}else{
 						isi_tabel($no, array($gambar, $data['judul'], $aktif), $link, $data['id_template']);
 					}
+					$no++;
 				}
 			tutup_tabel();
 		break;
@@ -98,5 +99,14 @@
 
 		case "delete":
 			//Skrip menghapus data di database
+			$query= $mysqli->query("SELECT * FROM template WHERE id_template = '$_GET[id]'");
+			$data = $query->fetch_array();
+
+			include "../library/function_remove.php";
+			hapus_folder("../template/$data[folder]");
+
+			$mysqli->query("DELETE FROM template WHERE id_template='$_GET[id]'");
+
+			header('location: '.$link);
 		break;
 	}
