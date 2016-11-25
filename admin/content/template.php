@@ -46,6 +46,21 @@
 
 		case "form":
 			//Skrip menampilkan form input dan edit data
+			if(isset($_GET['id'])){
+				$query = $mysqli->query("SELECT * FROM template WHERE id_template='$_GET[id]'");
+				$data = $query->fetch_array();
+				$aksi = "Edit";
+			}else{
+				$data = array("id_template"=>"","judul"=>"");
+				$aksi = "Tambah";
+			}
+
+			echo '<h3 class="page-header"><b>'.$aksi.' Template</b></h3>';
+
+			buka_form($link, $data['id_template'], strtolower($aksi));
+				buat_textbox("Judul", "judul", $data['judul']);
+				if($aksi == "Tambah") buat_textbox("File","file","",4,"file");
+			tutup_form($link);
 		break;
 
 		case "action":
