@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+RewriteEngine on
+
+RewriteRule ^$ index.php [L]
+RewriteRule ^home/([0-9]+)$ index.php?content=home&hal=$1 [L]
+RewriteRule ^home/([0-9]+)/([0-9]+)/(.*)$ index.php?content=home&show=$1&id=$2 [L]
+RewriteRule ^home/([0-9]+)/(.*)$ index.php?content=home&show=$1 [L]
+
+RewriteRule ^artikel/([0-9]+)/(.*)$ index.php?content=artikel&id=$1 [L]
+
+RewriteRule ^kat/([0-9]+)/([0-9]+)/(.*)$ index.php?content=kategori&id=$1&hal=$2 [L]
+RewriteRule ^kat/([0-9]+)/(.*)$ index.php?content=kategori&id=$1 [L]
+
+RewriteRule ^pencarian/([0-9]+)/(.*)$ index.php?content=pencarian&kata=$2&hal=$1 [L]
+RewriteRule ^pencarian$ index.php?content=pencarian&kata=$1 [L]
+
+RewriteRule ^hal/([0-9]+)/([0-9]+)/([0-9]+)/(.*)$ index.php?content=halaman&id=$1&show=$2&hal=$3 [L]
+RewriteRule ^hal/([0-9]+)/([0-9]+)/(.*)$ index.php?content=halaman&id=$1&show=$2 [L]
+RewriteRule ^hal/([0-9]+)/(.*)$ index.php?content=halaman&id=$1 [L]
+
+
+</IfModule>
