@@ -94,5 +94,34 @@
 
 		case "restore":
 			//Skrip restore
+			$nama_file 		= $_FILES['filesql']['name'];
+			$lokasi_file 	= $_FILES['filesql']['tmp_name'];
+			
+			$alamat_file 	= "backup/".$nama_file;		
+			if(move_uploaded_file($lokasi_file , "backup/$nama_file")){
+				$templine	= '';
+				$lines		= file($alamat_file);
+
+				foreach($lines as $line){
+					if(substr($line, 0, 2) == '--' || $line == '') continue;
+				 
+					$templine .= $line;
+
+					if(substr(trim($line), -1, 1) == ';'){
+						$mysqli->query($templine) or die($mysql->error);
+						$templine = '';
+					}
+				}
+				echo '<script>
+						window.alert("Database berhasil di-restore!");
+						window.location.href = "'.$link.'";
+					</script>';
+			
+			}else{
+				echo '<script>
+						window.alert("Restore database gagal!");
+						window.location.href = "'.$link.'";
+					</script>';
+			}
 		break;
 	}
