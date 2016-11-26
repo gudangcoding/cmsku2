@@ -47,21 +47,20 @@
 				//4. Cari data dari tabel
 				$data = $mysqli->query("SELECT * FROM ".$table);
 				$fields_info = $data->fetch_fields();
-
 				//5. Dapatkan nama kolom (fields) dan nilainya (values)
 				while($values = $data->fetch_assoc()) {
 					$str_fields = '';
 					$str_values = '';
 					foreach ($fields_info as $field) {
 						if($str_fields != '') $str_fields .= ',';
+						
 						$str_fields .= "`".$field->name."`";
 				
 						if($str_values != '') $str_values .= ',';
 						$data_values = str_replace("'", "''", $values[$field->name]);
-						$data_values = preg_replace("\n", "\\n", $data_values);
+						$data_values = preg_replace("/\n/", "\\n", $data_values);//ereg_replace() is deprecated
 						$str_values .= "'".$data_values."'";
 					}
-					
 
 					//6. Generate skrip SQL untuk menyisipkan (insert) data
 					$isi_file .= "INSERT INTO ".$table." (".$str_fields.") VALUES (".$str_values.");\n";
