@@ -59,3 +59,16 @@
 				<script type="text/javascript" src="'.web_info('url').'/plugin/jquery/jquery-2.0.2.min.js"></script>
 				<script src="https://www.google.com/recaptcha/api.js"></script>';
 	}
+	// Fungsi untuk menampilkan template header pada folder template
+	function template_header()
+	{
+		include folder_template()."/header.php";
+	}
+	function form_pencarian($tombol="Search",$placeholder = "Search here...")
+	{
+		echo '<form method="post" action="'.web_info('url').'/pencarian" class="form form-inline form-search">
+					<input type="text" name="kata" class="form-control" placeholder="'.$placeholder.'">
+					<button type="submit" class="btn btn-default">'.$tombol.'</button>
+				</form>
+		';
+	}
