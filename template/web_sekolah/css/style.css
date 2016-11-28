@@ -16,6 +16,35 @@
 	color: #fff;
 }
 
+#nav{
+	background: #2e91ba;
+	margin-bottom: 20px;
+}
+.navbar{
+	background: #2780a5;
+	border: none;
+	border-radius: 0;
+	margin-bottom: 0;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #eee;
+  border-bottom: 3px solid #2780a5;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+	border-bottom: 3px solid #fff;
+}
+.dropdown-menu{
+	background: #2780a5;
+	border-radius: 0;
+}
+.dropdown-menu > li> a{
+	color: #eee;
+}
+
+
+
+
 #footer{
 	padding: 10px;
 	margin-top: 20px;

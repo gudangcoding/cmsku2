@@ -21,3 +21,21 @@
 			</div>
 		</div>
 	</header>
+	<nav id="nav">
+		<div class="container">
+			<div class="navbar navbar-default">
+				<div class="navbar-header">
+					<button type="button " class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+				<div id="navbar" class="navbar-collapse">
+					<ul class="nav navbar-nav">
+						<?php template_menu("main"); ?>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>

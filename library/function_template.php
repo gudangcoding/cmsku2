@@ -77,3 +77,41 @@
 		include folder_template()."/footer.php";
 		echo '<script type="text/javascript" src="'.web_info('url').'/plugin/bootstrap/js/bootstrap.min.js"></script>';
 	}
+	// Fungsi untuk menentukan link menu sesuai dengan jenis link (halaman, kategori atau URL)
+	function cari_link($rmenu){	
+		global $mysqli;
+		
+		if($rmenu['jenis_link'] == "halaman"){
+			$qhalaman = $mysqli->query("SELECT * FROM halaman WHERE id_halaman='$rmenu[link]'");
+			$rhal = $qhalaman->fetch_array();
+			$link = web_info('url')."/hal/$rmenu[link]/$rhal[judul_seo]";
+		}elseif($rmenu['jenis_link'] == "kategori"){
+			$qkategori = $mysqli->query("SELECT * FROM kategori WHERE id_kategori='$rmenu[link]'");
+			$rkat = $qkategori->fetch_array();
+			$link = web_info('url')."/kat/$rmenu[link]/$rkat[kategori_seo]";
+		}else{
+			$link = $rmenu['link'];
+		}
+		
+		return $link;
+	}
+
+	// Fungsi untuk menampilkan menu
+	function template_menu($kategori='main'){
+		global $mysqli;					
+		$qmenu = $mysqli->query("SELECT * FROM menu WHERE kategori_menu='$kategori' AND induk='0' ORDER BY urut");
+		while($menu = $qmenu->fetch_array()){
+			$qsubmenu = $mysqli->query("SELECT * FROM menu WHERE induk='$menu[id_menu]' ORDER BY urut");
+			if($qsubmenu->num_rows > 0){
+				echo '<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
+						'.$menu['judul'].' <b class="caret"></b></a>
+						<ul class="dropdown-menu">';
+						while($sub = $qsubmenu->fetch_array()){
+							echo'<li><a href="'.cari_link($sub).'">'.$sub['judul'].'</a></li>';			
+						}
+				echo'	</ul></li>';
+			}else{
+				echo'<li><a href="'.cari_link($menu).'">'.$menu['judul'].'</a></li>';
+			}
+		}
+	}
