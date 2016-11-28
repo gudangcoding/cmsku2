@@ -30,5 +30,37 @@
 	</div>
 </section>
 <br>
-
+<section class="container content">
+	<div class="row">
+		<div class="col-md-8 main">
+			<?php
+			if(web_info('homepage')==0){
+				$template_artikel = 
+				'<div class="row artikel">
+					<div class="col-md-4">
+						<img src="{gambar}">
+					</div>
+					<div class="col-md-8">
+						<h3 class="judul"><a href="{link}">{judul}</a></h3>
+						<small class="text-muted">{meta}</small>
+						<div class="konten-artikel">{konten} ... <a href="{link}">More>></a></div>
+					</div>
+				</div><hr>';
+				template_artikel($template_artikel, 5, 400);
+			}else{
+				$template_halaman = 
+				'<h3 class="page-header">{judul}</h3>
+				 {gambar}<br><br>
+				 <div class="konten-halaman">{konten}</div>';
+				template_halaman($template_halaman, web_info('homepage'));
+			}
+			?>
+		</div>
+		<div class="col-md-4 sidebar">
+			<div class="widget">
+				<!-- Skrip sidebar di sini -->
+			</div>
+		</div>
+	</div>
+</section>
 <?php template_footer(); ?>
