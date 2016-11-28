@@ -41,6 +41,11 @@
 .dropdown-menu > li> a{
 	color: #eee;
 }
+#slideshow{
+	margin-top: -20px;
+	background: #000;
+	padding: 10px 0;
+}
 
 
 
