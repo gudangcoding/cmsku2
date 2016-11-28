@@ -72,3 +72,8 @@
 				</form>
 		';
 	}
+	function template_footer()
+	{
+		include folder_template()."/footer.php";
+		echo '<script type="text/javascript" src="'.web_info('url').'/plugin/bootstrap/js/bootstrap.min.js"></script>';
+	}
