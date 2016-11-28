@@ -59,6 +59,12 @@
 		<div class="col-md-4 sidebar">
 			<div class="widget">
 				<!-- Skrip sidebar di sini -->
+				<?php 
+					$judul = '<h4 class="judul">{judul}</h4>';
+					$awal_konten = '<div class="konten">';
+					$akhir_konten = '</div>';
+					template_widget($judul, $awal_konten, $akhir_konten); 
+				?>
 			</div>
 		</div>
 	</div>

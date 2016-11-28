@@ -210,3 +210,55 @@
 			echo buat_paging("home","",$batas, $jmldata, $hal);
 		}
 	}
+	// Fungsi untuk menampilkan daftar sidebar
+	function template_widget($tpl_judul, $awal_konten, $akhir_konten, $posisi = 1){
+		global $mysqli;
+		
+		$qsidebar = $mysqli->query("SELECT * FROM widget WHERE posisi='$posisi' and aktif='Y' ORDER BY urut");
+		while($r = $qsidebar->fetch_array()){
+			echo '<div class="blok-widget">';
+			$judul = $tpl_judul;
+			$judul = str_replace('{judul}', $r['judul'], $judul);
+			if($r['judul']!=""){
+				echo $judul;
+			} 
+			
+			echo $awal_konten;
+			if($r['tipe'] == "terbaru"){
+				echo '<ul class="list-artikel">';
+				$qartikel = $mysqli->query("SELECT * FROM artikel ORDER BY id_artikel DESC LIMIT 5");
+				while($r = $qartikel->fetch_array()){
+					echo '<li><a href="'.web_info('url').'/artikel/'.$r['id_artikel'].'/'.$r['judul_seo'].'">'.$r['judul'].'</a></li>';
+				}
+				echo '</ul>';
+			}elseif($r['tipe'] == "populer"){
+				echo '<ul class="list-artikel">';	
+				$qartikel = $mysqli->query("SELECT * FROM artikel ORDER BY hits DESC LIMIT 5");	
+				while($r = $qartikel->fetch_array()){
+					echo '<li><a href="'.web_info('url').'/artikel/'.$r['id_artikel'].'/'.$r['judul_seo'].'">'.$r['judul'].'</a></li>';
+				}
+				echo '</ul>';
+			}elseif($r['tipe'] == "kategori"){
+				echo '<ul class="list-kategori">';
+				$qartikel = $mysqli->query("SELECT * FROM kategori");
+				while($r = $qartikel->fetch_array()){
+					echo '<li><a href="'.web_info('url').'/kat/'.$r['id_kategori'].'/'.$r['kategori_seo'].'">'.$r['kategori'].'</a></li>';
+				}
+				echo '</ul>';
+			}elseif($r['tipe'] == "menu"){
+				echo '<ul class="menu-widget">';
+				template_menu($r['id_widget']);
+				echo '</ul>';
+			}elseif($r['tipe'] == "skrip"){
+				echo $r['konten'];
+			}else{
+				$qmodul = $mysqli->query("SELECT * FROM modul where id_modul='$r[konten]'");
+				$mdl = $qmodul->fetch_array();
+				$_FOLDER_MODUL = 'module/'.$mdl['folder'];
+				include 'module/'.$mdl['folder'].'/widget.php';
+			}
+			
+			echo $akhir_konten;		
+			echo '</div>';
+		}	
+	}
