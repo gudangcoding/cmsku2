@@ -262,3 +262,39 @@
 			echo '</div>';
 		}	
 	}
+	// Fungsi untuk menampilkan isi sebuah halaman
+	function template_halaman($template, $id){
+		global $mysqli;
+		
+		$qhalaman = $mysqli->query("SELECT * FROM halaman WHERE id_halaman='$id'");
+		$r = $qhalaman->fetch_array();
+			$template_halaman = $template;
+			
+			$breadcrumb = '<ul class="breadcrumb">
+							<li><a href="'.web_info('url').'">Home</a></li>
+							<li class="active">'.$r['judul'].'</li>
+						</ul>';
+			$template_halaman = str_replace('{breadcrumb}', $breadcrumb, $template_halaman);
+			
+			
+			$template_halaman = str_replace('{judul}', $r['judul'], $template_halaman);
+
+			if($r['gambar'] != ""){
+				$gambar = web_info('url')."/media/source/".$r['gambar'];
+				$template_halaman = str_replace('{gambar}',	'<img src="'.$gambar.'">', $template_halaman);
+			}else{
+				$template_halaman = str_replace('{gambar}',	'', $template_halaman);
+			}
+			
+			$konten = str_replace("../media/", web_info('url')."/media/", $r['isi']);
+			$template_halaman= str_replace('{konten}', $konten, $template_halaman);
+			
+			echo $template_halaman;
+		
+		if($r['id_modul']!= 0){
+			$qmodul = $mysqli->query("SELECT * FROM modul WHERE id_modul='$r[id_modul]'");
+			$rmd = $qmodul->fetch_array();
+			$_FOLDER_MODUL = 'module/'.$rmd['folder'];
+			if(file_exists("module/$rmd[folder]/content.php")) include "module/$rmd[folder]/content.php";
+		}
+	}
