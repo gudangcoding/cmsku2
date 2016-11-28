@@ -456,3 +456,51 @@
 			</div>
 		</form>';
 	}
+	// Fungsi untuk menampilkan daftar artikel dalam sebuah kategori
+	function template_kategori($template, $limit=10, $panjang=300){
+		global $mysqli;
+		
+		$qkategori = $mysqli->query("SELECT * FROM kategori WHERE id_kategori='$_GET[id]'");
+		$rkat = $qkategori->fetch_array();
+		echo'<ul class="breadcrumb">
+				<li><a href="'.web_info('url').'">Home</a></li>
+				<li class="active">'.$rkat['kategori'].'</li>
+			</ul>';
+		
+		$batas 	= $limit;	
+		$hal 	= isset($_GET['hal']) ? $_GET['hal'] : 1;
+		$posisi = isset($_GET['hal']) ? ($hal-1) * $batas : 0;
+				
+		$qartikel = $mysqli->query("SELECT * FROM artikel WHERE kategori='$_GET[id]' ORDER BY id_artikel DESC  LIMIT $posisi, $batas");
+		while($r = $qartikel->fetch_array()){
+			$template_artikel = $template;
+			$link = web_info('url')."/artikel/$r[id_artikel]/$r[judul_seo]";
+			$template_artikel = str_replace('{link}', $link, $template_artikel);
+			
+			if($r['gambar'] != "") $gambar = web_info('url')."/media/thumbs/".$r['gambar'];
+			else $gambar = web_info('url')."/media/thumbs/blank.png";
+			$template_artikel = str_replace('{gambar}',	$gambar, $template_artikel);
+			
+			$template_artikel = str_replace('{judul}', $r['judul'], $template_artikel);
+			
+			$quser = $mysqli->query("SELECT * FROM user WHERE id_user='$r[id_user]'");
+			$u = $quser->fetch_array();			
+			$meta= $u['nama_lengkap'].' | '.$r['hari'].', '.tgl_indonesia($r['tanggal']).' '.$r['jam'].' WIB'; 
+			$template_artikel = str_replace('{meta}', $meta, $template_artikel);
+			
+			$konten = substr($r['isi'], 0, $panjang);
+			$konten = substr($r['isi'], 0, strrpos($konten, " ") );
+			$konten = str_replace("../media/", web_info('url')."/media/", $konten);
+			$template_artikel = str_replace('{konten}', $konten, $template_artikel);
+			
+			echo $template_artikel;
+		}
+		
+		$qartikel = $mysqli->query("SELECT * FROM artikel WHERE kategori='$_GET[id]'");
+		$jmldata = $qartikel->num_rows;
+		
+		if($jmldata>$batas){
+			echo buat_paging('kat/'.$_GET['id'], '/'.$rkat['kategori_seo'], $batas, $jmldata, $hal);
+		}
+		
+	}
