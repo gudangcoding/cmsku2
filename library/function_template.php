@@ -23,10 +23,10 @@
 		global $mysqli;
 
 		$content = (isset($_GET['content'])) ? $_GET['content'] : "home";
-		if($content = "artikel"){
+		if($content=="artikel"){
 			$qartikel = $mysqli->query("SELECT * FROM artikel WHERE id_artikel='$_GET[id]'");
 			$artikel = $qartikel->fetch_array();
-
+			
 			$judul = $artikel['judul'].' - '.web_info('judul');
 			$deskripsi = $artikel['judul'];
 			$keyword = $artikel['tag'];

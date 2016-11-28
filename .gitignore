@@ -3,7 +3,8 @@
 /backup
 /media
 /test/upload/
-/template
+/template/web_sekolah/images/
+*.zip
 /module
 /admin/backup
 cmsku2.sql

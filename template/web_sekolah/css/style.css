@@ -1,0 +1,17 @@
+#header{
+	background: #2e91ba;
+	padding: 10px 0;
+}
+#header .form-search{
+	float: right;
+	padding: 5px;
+}
+.form-search input{
+	border-radius: 0;
+}
+.form-search button{
+	background: #2780a5;
+	border-radius: 0;
+	border-color: #2780a5;
+	color: #fff;
+}
