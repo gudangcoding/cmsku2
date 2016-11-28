@@ -115,3 +115,54 @@
 			}
 		}
 	}
+	// Fungsi untuk membuat paginasi halaman
+	function buat_paging($link1, $link2, $batas, $jmldata, $halaktif){
+		$link1 = web_info('url').'/'.$link1;
+		$jmlhalaman = ceil($jmldata/$batas);
+		$class = 'btn btn-sm btn-default';
+		$link_halaman = '';	
+		$link_halaman .= '<div style="text-align: center">';
+		
+		// Link ke halaman pertama (first) dan sebelumnya (prev)
+		if($halaktif > 1){
+			$prev = $halaktif-1;
+			$link_halaman .= '<a href="'.$link1.'/1'.$link2.'" class="'.$class.'"><< First </a>  
+							  <a href="'.$link1.'/'.$prev.$link2.'" class="'.$class.'">< Prev </a>';
+		}
+		else{ 
+			$link_halaman .= '<a href="#" class="'.$class.' disabled"><< First </a>  
+							  <a href="#" class="'.$class.' disabled">< Prev </a>';
+		}
+
+		// Link halaman 1,2,3, ...
+		$angka = ($halaktif > 3 ? "...  " : " "); 
+		for ($i=$halaktif-2; $i<$halaktif; $i++){
+			if ($i < 1) continue;
+			$angka .= '<a href="'.$link1.'/'.$i.$link2.'" class="'.$class.'">'.$i.'</a> ';
+		}
+		
+		$angka .= '<a href="" class="btn btn-sm btn-primary disabled">'.$halaktif.'</a> ';
+		  
+	    for($i=$halaktif+1; $i<($halaktif+3); $i++){
+			if($i > $jmlhalaman) break;
+			$angka .= '<a href="'.$link1.'/'.$i.$link2.'" class="'.$class.'">'.$i.'</a> ';
+		}
+		
+		$angka .= ($halaktif+2<$jmlhalaman ? '... <a href="'.$link1.'/'.$jmlhalaman.$link2.'" class="'.$class.'">'.$jmlhalaman.'</a> ' : ' ');
+
+		$link_halaman .= $angka;
+
+		// Link ke halaman berikutnya (Next) dan terakhir (Last) 
+		if($halaktif < $jmlhalaman){
+			$next = $halaktif+1;
+			$link_halaman .= '<a href="'.$link1.'/'.$next.$link2.'" class="'.$class.'"> Next > </a>  
+							  <a href="'.$link1.'/'.$jmlhalaman.$link2.'" class="'.$class.'"> Last >> </a>';
+		}
+		else{
+			$link_halaman .= '<a href="#" class="'.$class.' disabled"> Next > </a>  
+							  <a href="#" class="'.$class.' disabled"> Last >> </a>';
+		}
+		
+		$link_halaman .= '</div>';
+		echo $link_halaman;
+	}
