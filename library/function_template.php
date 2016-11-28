@@ -298,3 +298,161 @@
 			if(file_exists("module/$rmd[folder]/content.php")) include "module/$rmd[folder]/content.php";
 		}
 	}
+	// Fungsi untuk menampilkan artikel detail
+	function template_artikel_detail($template){	
+		global $mysqli;
+		
+		$qartikel = $mysqli->query("SELECT * FROM artikel WHERE id_artikel='$_GET[id]'");
+		$r = $qartikel->fetch_array();
+		
+		//Menampilkan breadcrumb
+		$qkategori = $mysqli->query("SELECT * FROM kategori WHERE id_kategori='$r[kategori]'");
+		$rkat = $qkategori->fetch_array();
+		echo'<ul class="breadcrumb">
+				<li><a href="'.web_info('url').'">Home</a></li>
+				<li><a href="'.web_info('url').'/kat/'.$rkat['id_kategori'].'/'.$rkat['kategori_seo'].'">'.$rkat['kategori'].'</a></li>
+			</ul>';
+			
+		//Menampilkan artikel detail
+			$template_artikel = $template;
+			
+			if($r['gambar'] != "") $gambar = web_info('url')."/media/source/".$r['gambar'];
+			else $gambar = web_info('url')."/media/source/blank.png";
+			$template_artikel = str_replace('{gambar}',	$gambar, $template_artikel);
+			
+			$template_artikel = str_replace('{judul}', $r['judul'], $template_artikel);
+			
+			$quser = $mysqli->query("SELECT * FROM user WHERE id_user='$r[id_user]'");
+			$u = $quser->fetch_array();			
+			$meta= $u['nama_lengkap'].' | '.$r['hari'].', '.tgl_indonesia($r['tanggal']).' '.$r['jam'].' WIB'; 
+			$template_artikel = str_replace('{meta}', $meta, $template_artikel);
+			
+			$konten = str_replace("../media/", web_info('url')."/media/", $r['isi']);
+			$template_artikel = str_replace('{konten}', $konten, $template_artikel);
+			
+			echo $template_artikel;
+		
+		//Menampilkan artikel terkait
+		echo '<h4 class="page-header">Artikel Terkait:</h4>
+				<div class="row">';
+		$qkategori = $mysqli->query("SELECT * FROM artikel WHERE kategori='$r[kategori]' and id_artikel!='$r[id_artikel]' ORDER BY rand() LIMIT 4");
+		while($rkat = $qkategori->fetch_array()){		
+			$link = web_info('url')."/artikel/$rkat[id_artikel]/$rkat[judul_seo]";
+			echo '<div class="col-md-3 col-xs-6">';
+			
+			if($rkat['gambar']!="") $gambar = web_info('url')."/media/thumbs/".$rkat['gambar'];
+			else $gambar = web_info('url')."/media/thumbs/blak.png";
+			
+			echo '<img src="'.$gambar.'" width="100%">';
+			echo '<br><a href="'.$link.'">'.$rkat['judul'].'</a></div>';
+		}
+		echo '</div>';
+		
+		//Update data kolom hits pada artikel
+		$mysqli->query("UPDATE artikel set hits=hits+1 WHERE id_artikel='$r[id_artikel]'");
+		
+		//Menampilkan list komentar
+		$qkomentar = $mysqli->query("SELECT * FROM komentar WHERE id_artikel='$r[id_artikel]' ORDER BY id_komentar DESC");
+		$jmlkomentar = $qkomentar->num_rows;
+		
+		echo '<h4 class="page-header" id="header-komentar">'.$jmlkomentar.' Komentar: </h4>';
+		while($rkom = $qkomentar->fetch_array()){
+			$gravatar = 'http://www.gravatar.com/avatar.php?gravatar_id='.md5(strtolower($rkom['email']));
+			echo '<div class="row">
+					<div class="col-xs-3 col-md-2">
+						<img src="'.$gravatar.'" class="gravatar">
+					</div>
+					<div class="col-xs-9 col-md-10">
+						<b>'.$rkom['nama'].'</b><br>
+						<small class="tex-muted">'.tgl_indonesia($rkom['tanggal']).'</small>
+						<p>'.$rkom['komentar'].'</p>
+					</div>
+				</div><hr>';
+		}
+
+		echo '<h4 class="page-header">Isi Komentar: </h4>';
+		
+		//Mengatur validasi form komentar dan menyimpan komentar ke database
+		if(isset($_POST['kirim-komentar'])){
+			$msg = '';
+			if(trim($_POST['nama'])=="") $msg .= '<li>Nama belum diisi</li>';
+			if(trim($_POST['email'])=="") $msg .= '<li>Email belum diisi</li>';
+			if(trim($_POST['komentar'])=="") $msg .= '<li>Komentar belum diisi</li>';
+			 
+			$email_pattern = '/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/';  
+			if(!preg_match($email_pattern, $_POST['email'])) $msg .= '<li>Email tidak valid</li>';
+			
+			$captcha = isset($_POST['g-recaptcha-response']) ? $_POST['g-recaptcha-response'] : '';
+			if($captcha == "") $msg .= '<li>Captcha belum diverifikasi</li>';
+			
+			$secret_key = '6Ldb7RYTAAAAANbdwAm25Ax8OiaKuF1zPqGEDpuu';
+			$url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secret_key) . '&response=' . $captcha;   
+		    $recaptcha = file_get_contents($url);
+			$recaptcha = json_decode($recaptcha, true);
+			if (!$recaptcha['success']) $msg .= '<li>Verifikasi cpatcha belum benar</li>';
+		   
+			if($msg==''){
+				$nama = antiinjeksi($_POST['nama']);
+				$email = antiinjeksi($_POST['email']);
+				$komentar = addslashes($_POST['komentar']);
+				$tgl = date("Y-m-d");
+				
+				
+				$quser = $mysqli->query("SELECT * FROM user WHERE level='admin'");
+				$rus = $quser->fetch_array();
+				$pesan = "$nama mengirim pesan pada website ".web_info('judul');
+				mail($rus['email'], "Komentar Website", $pesan);
+				
+				$mysqli->query("INSERT INTO komentar SET
+					nama = '$nama',
+					email = '$email',
+					komentar = '$komentar',
+					tanggal = '$tgl',
+					id_artikel = '$r[id_artikel]'
+				");
+				
+				header('location: artikel/'.$id.'/'.$judul_seo.'#header-komentar');
+			}else{
+				echo'<div class="alert alert-warning"><ul>'.$msg.'</ul></div>
+					<script> window.location.href="#form-komentar";</script>';
+			}
+		}
+		
+		//Menampilkan form komentar
+		echo'<form method="post" class="form-horizontal form-komentar" id="form-komentar">';
+		
+		echo'<div class="form-group">
+				<label for="nama" class="col-sm-2 control-label">Nama</label>
+				<div class="col-sm-6">
+				  <input type="text" class="form-control" name="nama" id="nama">
+				</div>
+			 </div>';
+			 
+		echo'<div class="form-group">
+				<label for="email" class="col-sm-2 control-label">Email</label>
+				<div class="col-sm-6">
+				  <input type="text" class="form-control" name="email" id="email">
+				</div>
+			 </div>';
+			 
+		echo'<div class="form-group">
+				<label for="komentar" class="col-sm-2 control-label">Komentar</label>
+				<div class="col-sm-10">
+				  <textarea class="form-control" name="komentar" id="komentar" cols="8"></textarea>
+				</div>
+			 </div>';
+		echo'<div class="form-group">
+				<div class="col-sm-10 col-md-offset-2">
+				  <div class="g-recaptcha" data-sitekey="6Ldb7RYTAAAAAOIg65wh5cQuxzr3EsQRFBis9g3o"></div>
+				</div>
+			 </div>';
+			 
+		echo'<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default" name="kirim-komentar">
+						Kirim Komentar
+					</button>
+				</div>
+			</div>
+		</form>';
+	}
