@@ -504,3 +504,62 @@
 		}
 		
 	}
+	// Fungsi untuk menampilkan hasil pencarian artikel
+	function template_pencarian($template, $limit=20, $panjang=300){
+		global $mysqli;
+		
+		echo'<ul class="breadcrumb">
+				<li><a href="'.web_info('url').'">Home</a></li>
+				<li class="active">Hasil Pencarian</li>
+			</ul>';
+		
+		$batas 	= $limit;	
+		$hal 	= isset($_GET['hal']) ? $_GET['hal'] : 1;
+		$posisi = isset($_GET['hal']) ? ($hal-1) * $batas : 0;
+		
+		$kata = htmlentities(htmlspecialchars($_REQUEST['kata']), ENT_QUOTES);
+		$arrkata = explode(" ", $kata);
+		$sql = "SELECT * FROM artikel WHERE judul LIKE '%$kata%' OR isi LIKE '%$kata%'";
+		
+		foreach($arrkata as $rkata){
+			$sql .= " OR judul LIKE '%$rkata%' OR isi LIKE '%$rkata%'";
+		}
+
+		$sql .= " ORDER BY id_artikel DESC";		
+		$sql1 =  $sql." LIMIT $posisi, $batas";
+		$qartikel = $mysqli->query($sql1);
+		
+		echo '<h3>Hasil pencarian dari kata <b style="color: blue">'.$kata.'</b></h3>';
+		
+		while($r = $qartikel->fetch_array()){
+			$template_artikel = $template;
+			
+			$link = web_info('url')."/artikel/$r[id_artikel]/$r[judul_seo]";
+			$template_artikel = str_replace('{link}', $link, $template_artikel);
+			
+			if($r['gambar'] != "") $gambar = web_info('url')."/media/thumbs/".$r['gambar'];
+			else $gambar = web_info('url')."/media/thumbs/blank.png";
+			$template_artikel = str_replace('{gambar}',	$gambar, $template_artikel);
+			
+			$template_artikel = str_replace('{judul}', $r['judul'], $template_artikel);
+			
+			$quser = $mysqli->query("SELECT * FROM user WHERE id_user='$r[id_user]'");
+			$u = $quser->fetch_array();			
+			$meta= $u['nama_lengkap'].' | '.$r['hari'].', '.tgl_indonesia($r['tanggal']).' '.$r['jam'].' WIB'; 
+			$template_artikel = str_replace('{meta}', $meta, $template_artikel);
+			
+			$konten = substr($r['isi'], 0, $panjang);
+			$konten = substr($r['isi'], 0, strrpos($konten, " ") );
+			$konten = str_replace("../media/", web_info('url')."/media/", $konten);
+			$template_artikel = str_replace('{konten}', $konten, $template_artikel);
+			
+			echo $template_artikel;
+		}
+		
+		$qartikel = $mysqli->query($sql);
+		$jmldata = $qartikel->num_rows;
+		
+		if($jmldata>$batas){
+			echo buat_paging('pencarian', '/'.$_REQUEST['kata'], $batas, $jmldata, $hal);
+		}
+	}
