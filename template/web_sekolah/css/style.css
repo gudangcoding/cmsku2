@@ -46,6 +46,10 @@
 	background: #000;
 	padding: 10px 0;
 }
+
+.breadcrumb{
+	border-radius: 0;
+}
 img{
 	width: 100%;
 }
